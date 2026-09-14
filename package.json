@@ -1,7 +1,11 @@
+cat > package.json <<'EOF'
 {
   "name": "dark-panel",
   "version": "2.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -23,3 +27,4 @@
     "typescript": "^5.7.0"
   }
 }
+EOF
