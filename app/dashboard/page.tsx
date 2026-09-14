@@ -1,9 +1,239 @@
 "use client";
-import {useEffect,useState} from "react";
-import {Users,FileCog,Link2,Activity} from "lucide-react";
-export default function Dashboard(){
- const [d,setD]=useState<any>(null);
- useEffect(()=>{fetch("/api/dashboard").then(r=>r.json()).then(setD)},[]);
- const s=d?.stats||{users:0,configs:0,subscriptions:0,traffic:0};
- return <><div className="pagehead"><div><h1>داشبورد</h1><p>وضعیت کلی DARK را از اینجا مدیریت کنید.</p></div><a className="btn" href="/dashboard/configs/new">+ ساخت کانفیگ</a></div><div className="stats">{[["کاربران فعال",s.users,Users],["کانفیگ‌ها",s.configs,FileCog],["اشتراک‌ها",s.subscriptions,Link2],["مصرف کل",`${(Number(s.traffic)/1073741824).toFixed(1)} GB`,Activity]].map(([t,v,I]:any)=><div className="stat glass" key={t}><div className="statrow"><span className="muted">{t}</span><div className="iconbox"><I size={19}/></div></div><div className="value">{v}</div></div>)}</div><div className="grid2"><section className="card glass"><div className="cardtitle"><h3>مصرف هفتگی</h3><span className="badge blue">Live UI</span></div><div className="chart">{[35,52,43,61,50,74,64,88,76,94].map((h,i)=><i className="bar" style={{height:`${h}%`}} key={i}/>)}</div></section><section className="card glass"><div className="cardtitle"><h3>پروتکل‌ها</h3></div><div className="donut"/><div className="legend">{["VLESS","VMess","Trojan","Shadowsocks","Hysteria2"].map((x,i)=><div key={x}><span>● {x}</span><b>{[38,24,16,12,10][i]}%</b></div>)}</div></section></div><section className="card glass tablecard"><div className="cardtitle"><h3>آخرین فعالیت‌ها</h3></div><div className="activity">{(d?.activities||[]).map((x:any)=><div key={x.id}><span>{x.action}</span><small>{new Date(x.created_at).toLocaleString("fa-IR")}</small></div>)}</div></section></>
+
+import { useEffect, useState } from "react";
+import {
+  Users,
+  FileCog,
+  Link2,
+  Activity,
+  Plus,
+  Server,
+} from "lucide-react";
+
+
+export default function Dashboard() {
+
+  const [data,setData]=useState<any>(null);
+
+
+  useEffect(()=>{
+
+    fetch("/api/dashboard")
+      .then(r=>r.json())
+      .then(setData);
+
+  },[]);
+
+
+
+  const stats=data?.stats || {
+    users:0,
+    configs:0,
+    subscriptions:0,
+    traffic:0
+  };
+
+
+
+  const cards=[
+    {
+      title:"کاربران",
+      value:stats.users,
+      icon:Users
+    },
+    {
+      title:"کانفیگ‌ها",
+      value:stats.configs,
+      icon:FileCog
+    },
+    {
+      title:"اشتراک‌ها",
+      value:stats.subscriptions,
+      icon:Link2
+    },
+    {
+      title:"مصرف",
+      value:
+      `${(Number(stats.traffic)/1073741824).toFixed(1)} GB`,
+      icon:Activity
+    }
+  ];
+
+
+
+return (
+
+<>
+
+<div className="pagehead">
+
+<div>
+
+<h1>DARK Panel</h1>
+
+<p>
+مدیریت کامل سرویس‌ها
+</p>
+
+</div>
+
+
+<a
+className="btn"
+href="/dashboard/configs/new"
+>
+<Plus size={15}/>
+کانفیگ جدید
+</a>
+
+
+</div>
+
+
+
+<div className="stats dark-mobile-stats">
+
+
+{
+cards.map((item:any)=>{
+
+const Icon=item.icon;
+
+
+return (
+
+<div
+className="stat glass"
+key={item.title}
+>
+
+
+<div className="statrow">
+
+<span className="muted">
+{item.title}
+</span>
+
+
+<div className="iconbox">
+<Icon size={18}/>
+</div>
+
+
+</div>
+
+
+<div className="value">
+{item.value}
+</div>
+
+
+</div>
+
+)
+
+})
+}
+
+
+</div>
+
+
+
+
+
+<div className="mobile-dashboard-grid">
+
+
+<div className="card glass">
+
+
+<div className="cardtitle">
+
+<h3>
+وضعیت سیستم
+</h3>
+
+</div>
+
+
+<div className="server-box">
+
+<Server size={30}/>
+
+<div>
+
+<b>
+Online
+</b>
+
+<small>
+Railway Server
+</small>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div className="card glass">
+
+
+<div className="cardtitle">
+
+<h3>
+فعالیت اخیر
+</h3>
+
+
+</div>
+
+
+
+<div className="activity">
+
+
+{
+(data?.activities || [])
+.slice(0,5)
+.map((x:any)=>(
+
+<div key={x.id}>
+
+<span>
+{x.action}
+</span>
+
+<small>
+{new Date(x.created_at)
+.toLocaleDateString("fa-IR")}
+</small>
+
+</div>
+
+))
+
+}
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</>
+
+)
+
 }
