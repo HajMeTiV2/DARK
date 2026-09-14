@@ -2,56 +2,29 @@
 
 
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-
 import {
- LayoutDashboard,
- Users,
- FileCog,
- Link2,
- ScanLine,
- Settings2
+LayoutDashboard,
+FileCog,
+Link2,
+ScanLine,
+Users
 } from "lucide-react";
+
+import {usePathname} from "next/navigation";
 
 
 
 const items=[
 
-{
- title:"خانه",
- url:"/dashboard",
- icon:LayoutDashboard
-},
+["خانه","/dashboard",LayoutDashboard],
 
-{
- title:"کاربر",
- url:"/dashboard/users",
- icon:Users
-},
+["کاربران","/dashboard/users",Users],
 
-{
- title:"کانفیگ",
- url:"/dashboard/configs",
- icon:FileCog
-},
+["کانفیگ","/dashboard/configs",FileCog],
 
-{
- title:"ساب",
- url:"/dashboard/subscriptions",
- icon:Link2
-},
+["ساب","/dashboard/subscriptions",Link2],
 
-{
- title:"اسکن",
- url:"/dashboard/scanner",
- icon:ScanLine
-},
-
-{
- title:"تنظیم",
- url:"/dashboard/settings",
- icon:Settings2
-}
+["اسکن","/dashboard/scanner",ScanLine]
 
 ];
 
@@ -60,61 +33,46 @@ const items=[
 export default function MobileNav(){
 
 
-const pathname=usePathname();
+const path=usePathname();
 
 
 
 return (
 
-<nav className="mobile-nav">
+<nav className="bottom-nav">
 
 
 {
-items.map(item=>{
+items.map(([name,url,Icon]:any)=>(
 
-
-const Icon=item.icon;
-
-const active =
-pathname===item.url ||
-pathname.startsWith(item.url+"/");
-
-
-return (
 
 <Link
-
-href={item.url}
-
-key={item.url}
-
+href={url}
+key={url}
 className={
-active ? "active" : ""
+path===url ? "active":""
 }
-
 >
 
 
-<Icon size={20}/>
-
+<Icon size={21}/>
 
 <span>
-{item.title}
+{name}
 </span>
 
 
 </Link>
 
 
-)
-
-
-})
+))
 
 }
 
 
+
 </nav>
+
 
 )
 
