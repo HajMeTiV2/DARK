@@ -1,85 +1,31 @@
-"use client";
-
 import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
   FileCog,
   Link2,
-  Radar,
-  Settings,
+  ScanLine,
+  Activity,
+  Settings2,
   LogOut
 } from "lucide-react";
-import { usePathname } from "next/navigation";
 
-const menu = [
-  {
-    title: "داشبورد",
-    href: "/dashboard",
-    icon: LayoutDashboard
-  },
-  {
-    title: "کاربران",
-    href: "/dashboard/users",
-    icon: Users
-  },
-  {
-    title: "کانفیگ‌ها",
-    href: "/dashboard/configs",
-    icon: FileCog
-  },
-  {
-    title: "اشتراک‌ها",
-    href: "/dashboard/subscriptions",
-    icon: Link2
-  },
-  {
-    title: "اسکنر",
-    href: "/dashboard/scanner",
-    icon: Radar
-  },
-  {
-    title: "تنظیمات",
-    href: "/dashboard/settings",
-    icon: Settings
-  }
+import MobileNav from "./MobileNav";
+
+
+const nav = [
+  ["داشبورد","/dashboard",LayoutDashboard],
+  ["کاربران","/dashboard/users",Users],
+  ["کانفیگ‌ها","/dashboard/configs",FileCog],
+  ["اشتراک‌ها","/dashboard/subscriptions",Link2],
+  ["IP اسکنر","/dashboard/scanner",ScanLine],
+  ["گزارشات","/dashboard/reports",Activity],
+  ["تنظیمات","/dashboard/settings",Settings2]
 ];
 
 
-function NavItems(){
 
-  const path = usePathname();
-
-  return (
-    <>
-      {
-        menu.map(item=>{
-
-          const Icon=item.icon;
-          const active =
-            path === item.href ||
-            path.startsWith(item.href+"/");
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={active ? "active":""}
-            >
-              <Icon size={18}/>
-              <span>{item.title}</span>
-            </Link>
-          )
-
-        })
-      }
-    </>
-  )
-}
-
-
-
-export default function DashboardLayout({
+export default function Layout({
  children
 }:{
  children:React.ReactNode
@@ -93,36 +39,67 @@ return (
 
 <aside className="sidebar glass">
 
+
 <div className="brand">
 
-<img src="/logo.png"/>
+<img src="/logo.svg" alt="DARK"/>
 
 <div>
+
 <b>DARK</b>
-<small>@Mehtif</small>
+
+<small>
+@Mehtif
+</small>
+
 </div>
 
 </div>
+
 
 
 <nav>
 
-<NavItems/>
+{
+nav.map(([title,url,Icon]:any)=>(
+
+<Link
+href={url}
+key={url}
+>
+
+<Icon size={18}/>
+
+<span>
+{title}
+</span>
+
+</Link>
+
+))
+}
 
 </nav>
 
 
-<form action="/api/auth/logout" method="post">
+
+<form
+action="/api/auth/logout"
+method="post"
+>
 
 <button className="logout">
 
 <LogOut size={17}/>
 
+<span>
 خروج
+</span>
 
 </button>
 
 </form>
+
 
 
 </aside>
@@ -130,44 +107,80 @@ return (
 
 
 
+
 <main className="content">
 
 
-<div className="topbar">
+<header className="topbar">
 
 
 <div className="mobile-brand">
 
-<img src="/logo.png"/>
+<img src="/logo.svg" alt="DARK"/>
 
 <div>
-<b>DARK</b>
-<small>@Mehtif</small>
-</div>
+
+<b>
+DARK
+</b>
+
+<small>
+@Mehtif
+</small>
 
 </div>
+
+
+</div>
+
+
+
+<div className="search">
+
+<span>
+⌕
+</span>
+
+<input
+placeholder="جستجو..."
+/>
+
+</div>
+
 
 
 
 <div className="userpill">
 
+
 <div className="avatar">
-D
+M
 </div>
+
 
 <div>
-<b>Admin</b>
-<small>مدیر پنل</small>
-</div>
+
+<b>
+Mehtif
+</b>
+
+<small>
+Administrator
+</small>
 
 </div>
 
 
 </div>
+
+
+
+</header>
 
 
 
 {children}
+
 
 
 </main>
@@ -175,15 +188,10 @@ D
 
 
 
-<div className="mobile-nav">
-
-<NavItems/>
-
-</div>
+<MobileNav />
 
 
 </div>
-
 
 )
 
