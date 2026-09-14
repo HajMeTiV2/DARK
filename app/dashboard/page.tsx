@@ -1,63 +1,66 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useEffect,useState} from "react";
 import {
-  Users,
-  FileCog,
-  Link2,
-  Activity,
-  Plus,
-  Server,
+ Users,
+ FileCog,
+ Link2,
+ Activity
 } from "lucide-react";
 
 
-export default function Dashboard() {
+export default function Dashboard(){
 
-  const [data,setData]=useState<any>(null);
-
-
-  useEffect(()=>{
-
-    fetch("/api/dashboard")
-      .then(r=>r.json())
-      .then(setData);
-
-  },[]);
+const [d,setD]=useState<any>(null);
 
 
+useEffect(()=>{
 
-  const stats=data?.stats || {
-    users:0,
-    configs:0,
-    subscriptions:0,
-    traffic:0
-  };
+fetch("/api/dashboard")
+.then(r=>r.json())
+.then(setD)
+
+},[]);
 
 
 
-  const cards=[
-    {
-      title:"کاربران",
-      value:stats.users,
-      icon:Users
-    },
-    {
-      title:"کانفیگ‌ها",
-      value:stats.configs,
-      icon:FileCog
-    },
-    {
-      title:"اشتراک‌ها",
-      value:stats.subscriptions,
-      icon:Link2
-    },
-    {
-      title:"مصرف",
-      value:
-      `${(Number(stats.traffic)/1073741824).toFixed(1)} GB`,
-      icon:Activity
-    }
-  ];
+const s=d?.stats || {
+users:0,
+configs:0,
+subscriptions:0,
+traffic:0
+};
+
+
+
+const cards=[
+
+{
+title:"کاربران فعال",
+value:s.users,
+icon:Users
+},
+
+{
+title:"کانفیگ‌ها",
+value:s.configs,
+icon:FileCog
+},
+
+{
+title:"اشتراک‌ها",
+value:s.subscriptions,
+icon:Link2
+},
+
+{
+title:"مصرف کل",
+value:
+`${(Number(s.traffic)/1073741824).toFixed(1)} GB`,
+icon:Activity
+}
+
+];
 
 
 
@@ -65,14 +68,17 @@ return (
 
 <>
 
+
 <div className="pagehead">
 
 <div>
 
-<h1>DARK Panel</h1>
+<h1>
+داشبورد
+</h1>
 
 <p>
-مدیریت کامل سرویس‌ها
+وضعیت کلی DARK
 </p>
 
 </div>
@@ -82,58 +88,8 @@ return (
 className="btn"
 href="/dashboard/configs/new"
 >
-<Plus size={15}/>
-کانفیگ جدید
++ کانفیگ
 </a>
-
-
-</div>
-
-
-
-<div className="stats dark-mobile-stats">
-
-
-{
-cards.map((item:any)=>{
-
-const Icon=item.icon;
-
-
-return (
-
-<div
-className="stat glass"
-key={item.title}
->
-
-
-<div className="statrow">
-
-<span className="muted">
-{item.title}
-</span>
-
-
-<div className="iconbox">
-<Icon size={18}/>
-</div>
-
-
-</div>
-
-
-<div className="value">
-{item.value}
-</div>
-
-
-</div>
-
-)
-
-})
-}
 
 
 </div>
@@ -145,31 +101,145 @@ key={item.title}
 <div className="mobile-dashboard-grid">
 
 
-<div className="card glass">
+{
+cards.map((c:any)=>{
+
+const Icon=c.icon;
+
+
+return (
+
+<div
+className="mobile-stat-card glass"
+key={c.title}
+>
+
+
+<div className="mobile-stat-top">
+
+
+<span>
+{c.title}
+</span>
+
+
+<div className="iconbox">
+
+<Icon size={18}/>
+
+</div>
+
+
+</div>
+
+
+<strong>
+{c.value}
+</strong>
+
+
+</div>
+
+)
+
+})
+
+}
+
+
+</div>
+
+
+
+
+
+
+<div className="mobile-dashboard-box glass">
 
 
 <div className="cardtitle">
 
 <h3>
-وضعیت سیستم
+مصرف هفتگی
 </h3>
+
+<span className="badge blue">
+LIVE
+</span>
 
 </div>
 
 
-<div className="server-box">
 
-<Server size={30}/>
+<div className="chart">
 
-<div>
+
+{
+[35,52,43,61,50,74,64,88].map((x,i)=>(
+
+<div
+className="bar"
+style={{
+height:`${x}%`
+}}
+key={i}
+/>
+
+))
+
+}
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="mobile-dashboard-box glass">
+
+
+<h3>
+پروتکل‌ها
+</h3>
+
+
+<div className="protocol-list">
+
+
+{
+[
+["VLESS","38%"],
+["VMess","24%"],
+["Trojan","16%"],
+["Shadowsocks","12%"],
+["Hysteria2","10%"]
+
+].map(x=>(
+
+
+<div key={x[0]}>
+
+<span>
+{x[0]}
+</span>
 
 <b>
-Online
+{x[1]}
 </b>
 
-<small>
-Railway Server
-</small>
+</div>
+
+
+))
+
+}
+
 
 </div>
 
@@ -177,33 +247,22 @@ Railway Server
 </div>
 
 
-</div>
 
 
 
+<div className="mobile-dashboard-box glass">
 
-
-<div className="card glass">
-
-
-<div className="cardtitle">
 
 <h3>
-فعالیت اخیر
+آخرین فعالیت‌ها
 </h3>
-
-
-</div>
-
 
 
 <div className="activity">
 
 
 {
-(data?.activities || [])
-.slice(0,5)
-.map((x:any)=>(
+(d?.activities||[]).map((x:any)=>(
 
 <div key={x.id}>
 
@@ -211,10 +270,14 @@ Railway Server
 {x.action}
 </span>
 
+
 <small>
-{new Date(x.created_at)
-.toLocaleDateString("fa-IR")}
+{
+new Date(x.created_at)
+.toLocaleString("fa-IR")
+}
 </small>
+
 
 </div>
 
@@ -228,8 +291,6 @@ Railway Server
 
 </div>
 
-
-</div>
 
 
 </>
